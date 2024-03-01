@@ -148,6 +148,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "qfieldcloud", "core", "templates"),
+            os.path.join(BASE_DIR, "templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -214,11 +215,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = "en"
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "en")
 
 TIME_ZONE = os.environ.get("QFIELDCLOUD_DEFAULT_TIME_ZONE") or "Europe/Zurich"
 
-USE_I18N = False
+USE_I18N = True
 
 USE_L10N = True
 
@@ -230,6 +231,7 @@ LANGUAGES = [
     ("en", "English"),
     ("fr", "French"),
     ("it", "Italian"),
+    ("fi", "Finnish"),
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -355,6 +357,9 @@ ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_ADAPTER = "qfieldcloud.core.adapters.AccountAdapter"
 ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_SIGNUP_REDIRECT_URL = "/"  # TODO: Django app does not contain any profile page, add simple page to indicate successful signup and redirect there
+
+INVITATIONS_ADAPTER = ACCOUNT_ADAPTER
 
 # Django axes configuration
 # https://django-axes.readthedocs.io/en/latest/4_configuration.html
@@ -382,7 +387,7 @@ DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 # Django invitations configurations
 # https://github.com/bee-keeper/django-invitations#additional-configuration
 INVITATIONS_INVITATION_EXPIRY = 365  # integer in days, 0 disables invitations
-INVITATIONS_INVITATION_ONLY = False
+INVITATIONS_INVITATION_ONLY = os.environ.get("INVITATIONS_INVITATION_ONLY", False)
 # INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
 INVITATIONS_GONE_ON_ACCEPT_ERROR = False
 

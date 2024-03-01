@@ -5,6 +5,7 @@ import sys
 import tempfile
 import traceback
 import uuid
+import os
 from datetime import timedelta
 from pathlib import Path
 from typing import Any, Iterable
@@ -305,14 +306,16 @@ class JobRun:
                 "JOB_ID": self.job_id,
                 "PROJ_DOWNLOAD_DIR": "/transformation_grids",
                 "QT_QPA_PLATFORM": "offscreen",
+                "PGPORT": os.environ.get("PGPORT"),
+                "PGHOST": os.environ.get("PGHOST"),
+                "PGUSER": os.environ.get("PGUSER"),
+                "PGPASSWORD": os.environ.get("PGPASSWORD"),
             },
             volumes=volumes,
             # TODO stream the logs to something like redis, so they can be streamed back in project jobs page to the user live
             # auto_remove=True,
             network=settings.QFIELDCLOUD_DEFAULT_NETWORK,
             detach=True,
-            mem_limit=config.WORKER_QGIS_MEMORY_LIMIT,
-            cpu_shares=config.WORKER_QGIS_CPU_SHARES,
             labels={
                 "app": f"{settings.ENVIRONMENT}_worker",
                 "type": self.job.type,
