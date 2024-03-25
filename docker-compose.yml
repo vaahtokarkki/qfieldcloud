@@ -152,17 +152,21 @@ services:
     volumes:
       - /run/user/1756/podman/podman.sock:/var/run/docker.sock:ro
 
-  caddy:
-    image: ${REGISTRY_URL}/caddy:2.7
+  nginx:
+    image: ${REGISTRY_URL}/vaahtokarkki/qfieldcloud-nginx:latest
     volumes:
-      - static_volume:/static_files
-      - caddy_data:/data
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - static_volume:/var/www/html/staticfiles/
     ports:
       - target: 8080
         published: 8080
         protocol: tcp
         mode: host
+    depends_on:
+      - app
+    environment:
+      QFIELDCLOUD_HOST: ${QFIELDCLOUD_HOST}
+      NGINX_PORT: ${NGINX_PORT}
+      RESOLVER_FOR_NGINX: ${RESOLVER_FOR_NGINX}
 
   minio:
     image: ${REGISTRY_URL}/minio/minio:RELEASE.2023-04-07T05-28-58Z
